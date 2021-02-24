@@ -1,0 +1,45 @@
+
+server {
+    server_name www.mcoinchain.com; # managed by Certbot
+    location / {
+        proxy_pass http://127.0.0.1:8000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header        Host $host;
+        proxy_set_header        X-Real-IP $remote_addr;
+      #proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      #proxy_set_header        X-Forwarded-Proto $scheme;
+        add_header Cache-Control no-cache;
+      # Fix the “It appears that your reverse proxy set up is broken" error.
+      proxy_read_timeout  90;
+
+    }
+}
+
+
+server {
+    server_name  mcoinchain.com; # managed by Certbot
+    location / {
+        proxy_pass http://localhost:8546;
+        set $jsonrpc_whitelist 'eth_protocolVersion,eth_syncing,eth_coinbase,eth_mining,eth_hashrate,eth_gasPrice,eth_accounts,eth_blockNumber,eth_getBalance,eth_getStorageAt,eth_getTransactionCount,eth_getBlockTransactionCountByHash,eth_getBlockTransactionCountByNumber,eth_getUncleCountByBlockHash,eth_getUncleCountByBlockNumber,eth_getCode,eth_sign,eth_sendTransaction,eth_sendRawTransaction,eth_call,eth_estimateGas,eth_getBlockByHash,eth_getBlockByNumber,eth_getTransactionByHash,eth_getTransactionByBlockHashAndIndex,eth_getTransactionByBlockNumberAndIndex,eth_getTransactionReceipt,eth_pendingTransactions,eth_getUncleByBlockHashAndIndex,eth_getUncleByBlockNumberAndIndex,eth_getCompilers,eth_compileSolidity,eth_compileLLL,eth_compileSerpent,eth_newFilter, eth_newBlockFilter,eth_newPendingTransactionFilter,eth_uninstallFilter,eth_getFilterChanges,eth_getFilterLogs,eth_getLogs,eth_getWork,eth_submitWork,eth_submitHashrate';
+        access_by_lua_file './mcoin_rpc.lua';
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_set_header        Host $host;
+      #proxy_set_header        X-Real-IP $remote_addr;
+      #proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+      #proxy_set_header        X-Forwarded-Proto $scheme;
+        add_header Cache-Control no-cache;
+      #Fix the “It appears that your reverse proxy set up is broken" error.
+      proxy_read_timeout  90;
+
+    }
+  }
+
+
